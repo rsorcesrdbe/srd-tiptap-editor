@@ -1,0 +1,64 @@
+/* Classes a appliquer par le consommateur sur son propre markup (le coeur JS ne dicte aucun ID DOM,
+   ces classes sont le seul point d'accroche stable fourni par le package) :
+   .srd-tiptap-barre          -> conteneur de la barre d'outils
+   .srd-tiptap-zone-page      -> ancetre position:relative du ruban + zone de zoom (fond gris)
+   .srd-tiptap-editeur        -> element de montage passe en "monter"
+   .srd-tiptap-ruban-tableau  -> ruban contextuel tableau
+   .grille-tableau-*          -> picker de taille de tableau (voir toolbar/grille-tableau.js) */
+
+/* Barre d'outils : boutons construits a la main (TipTap est "headless", aucun ruban fourni). */
+.srd-tiptap-barre { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.srd-tiptap-barre button { background: #5f6368; color: #fff; border: 0; border-radius: 4px; padding: 4px 10px; font-size: .8rem; cursor: pointer; }
+.srd-tiptap-barre button.actif { background: #1a73e8; }
+
+.srd-tiptap-couleur-conteneur { display: inline-flex; align-items: center; gap: 2px; background: #5f6368; padding: 2px 6px; border-radius: 4px; }
+.srd-tiptap-couleur-etiquette { color: #fff; font-size: .8rem; font-weight: bold; }
+.srd-tiptap-couleur-conteneur input[type="color"] { width: 22px; height: 22px; padding: 0; border: none; background: none; cursor: pointer; }
+
+/* Ruban contextuel tableau : positionne en absolute par JS juste au-dessus du tableau courant (cf.
+   tableau/ruban-positionnement.js), donc .srd-tiptap-zone-page (son ancetre positionne le plus
+   proche) doit rester position:relative. */
+.srd-tiptap-zone-page { position: relative; background: #e8eaed; overflow: auto; }
+
+/* display:flex l'emporte sur l'attribut [hidden] par defaut (regle d'auteur > regle du navigateur,
+   a specificite egale) — reaffirme explicitement ci-dessous. */
+.srd-tiptap-ruban-tableau { position: absolute; z-index: 15; display: flex; gap: .3rem; align-items: center; background: #202124; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+.srd-tiptap-ruban-tableau[hidden] { display: none; }
+.srd-tiptap-ruban-tableau button { background: #5f6368; color: #fff; border: 0; border-radius: 4px; padding: 3px 8px; font-size: .75rem; cursor: pointer; }
+.srd-tiptap-ruban-tableau select { font-size: .75rem; }
+
+.srd-tiptap-editeur { background: #fff; margin: 1.5rem auto; box-shadow: 0 1px 4px rgba(0,0,0,.25); padding: 1rem; box-sizing: border-box; min-height: 4em; font-size: 11pt; }
+.srd-tiptap-editeur .ProseMirror { outline: none; }
+.srd-tiptap-editeur p { margin: 0 0 .5em; }
+.srd-tiptap-editeur img { max-width: 100%; height: auto; }
+
+/* Image selectionnable/redimensionnable (cf. extensions/image-avec-largeur.js) : le contour bleu +
+   la poignee n'apparaissent qu'une fois le noeud image selectionne (clic dessus). */
+.tiptap-image-enveloppe { position: relative; display: inline-block; line-height: 0; }
+.tiptap-image-enveloppe.est-selectionnee img { outline: 2px solid #1a73e8; }
+.tiptap-poignee-redim { position: absolute; right: -6px; bottom: -6px; width: 12px; height: 12px; background: #1a73e8; border: 2px solid #fff; border-radius: 50%; cursor: nwse-resize; display: none; }
+.tiptap-image-enveloppe.est-selectionnee .tiptap-poignee-redim { display: block; }
+
+.srd-tiptap-editeur table { border-collapse: collapse; width: 100%; margin: 0; }
+/* position:relative indispensable : la poignee de redimensionnement de colonne (plus bas) est
+   inseree par le plugin comme widget A L'INTERIEUR de la cellule concernee, mais en
+   position:absolute — sans ce relative ici, elle se positionne par rapport a un ancetre plus
+   lointain et se retrouve visuellement decalee, faisant glisser la MAUVAISE colonne. */
+.srd-tiptap-editeur td { position: relative; border: 1px dashed #b0b7c0; vertical-align: top; padding: 4px; }
+.srd-tiptap-editeur td:last-child { width: 1%; white-space: nowrap; }
+.srd-tiptap-editeur td img, .srd-tiptap-editeur td .tiptap-image-enveloppe img { max-width: none; }
+
+/* Poignee de redimensionnement de colonne (plugin columnResizing de prosemirror-tables, classes
+   fixes imposees par le plugin lui-meme). */
+.column-resize-handle { position: absolute; right: -2px; top: 0; bottom: 0; width: 4px; background: #1a73e8; pointer-events: none; }
+.resize-cursor { cursor: col-resize; }
+
+.srd-tiptap-editeur hr { margin: 0; border: none; border-top: 1px solid #000; }
+
+/* Grille de selection de tableau facon Word (survoler pour choisir, cliquer pour inserer). */
+.grille-tableau-conteneur { position: relative; display: inline-block; }
+.grille-tableau-popup { position: absolute; top: 100%; left: 0; z-index: 20; background: #fff; border: 1px solid #dadce0; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.2); padding: 8px; margin-top: 2px; }
+.grille-tableau-etiquette { font-size: .8rem; color: #5f6368; margin-bottom: 6px; text-align: center; }
+.grille-tableau-cellules { display: grid; grid-template-columns: repeat(8, 16px); grid-template-rows: repeat(6, 16px); gap: 2px; }
+.grille-tableau-cellule { width: 16px; height: 16px; border: 1px solid #dadce0; background: #fff; box-sizing: border-box; cursor: pointer; }
+.grille-tableau-cellule.survolee { background: #cfe0fc; border-color: #1a73e8; }
