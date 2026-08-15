@@ -9,24 +9,36 @@
         x-load
         x-load-src="{{ FilamentAsset::getAlpineComponentSrc('srd-tiptap-editor', 'srd/tiptap-editor') }}"
         x-data="{
-            state: $wire.{{ $applyStateBindingModifiers(\"\$entangle('{$statePath}')\", isOptimisticallyLive: false) }},
+            state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')", isOptimisticallyLive: false) }},
             editeur: null,
             init() {
                 this.editeur = new window.SrdTipTapEditor({
-                    monter: this.\$refs.monter,
-                    barreOutils: this.\$refs.barreOutils,
+                    monter: this.$refs.monter,
+                    barreOutils: this.$refs.barreOutils,
                     contenuInitial: this.state || '',
                     onChange: (html) => { this.state = html; },
-                    rubanTableau: this.\$refs.rubanTableau,
+                    rubanTableau: this.$refs.rubanTableau,
+                    telechargerImage: (fichier) => new Promise((resolve, reject) => {
+                        this.$wire.upload(
+                            'componentFileAttachments.{{ $statePath }}',
+                            fichier,
+                            () => {
+                                this.$wire.getFormComponentFileAttachmentUrl('{{ $statePath }}')
+                                    .then((url) => resolve({ url }))
+                                    .catch(reject);
+                            },
+                            () => reject(new Error("Échec de l'envoi au serveur")),
+                        );
+                    }),
                     controles: {
-                        taillepolice: this.\$refs.taillepolice,
-                        police: this.\$refs.police,
-                        interligne: this.\$refs.interligne,
-                        couleurTexte: this.\$refs.couleurTexte,
-                        couleurSurlignage: this.\$refs.couleurSurlignage,
-                        boutonSansSurlignage: this.\$refs.boutonSansSurlignage,
-                        bordures: this.\$refs.bordures,
-                        grilleTableau: { bouton: this.\$refs.grilleBouton, popup: this.\$refs.grillePopup },
+                        taillepolice: this.$refs.taillepolice,
+                        police: this.$refs.police,
+                        interligne: this.$refs.interligne,
+                        couleurTexte: this.$refs.couleurTexte,
+                        couleurSurlignage: this.$refs.couleurSurlignage,
+                        boutonSansSurlignage: this.$refs.boutonSansSurlignage,
+                        bordures: this.$refs.bordures,
+                        grilleTableau: { bouton: this.$refs.grilleBouton, popup: this.$refs.grillePopup },
                     },
                 });
             },
@@ -89,6 +101,7 @@
                 </div>
             </div>
             <button type="button" data-commande="tracer-ligne">Trait horizontal</button>
+            <button type="button" data-profil-image="standard">Image</button>
         </div>
 
         <div class="srd-tiptap-zone-page">
