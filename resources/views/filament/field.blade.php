@@ -9,42 +9,10 @@
     <div
         x-load
         x-load-src="{{ FilamentAsset::getAlpineComponentSrc('srd-tiptap-editor', 'srd/tiptap-editor') }}"
-        x-data="{
+        x-data="srdTiptapEditor({
             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')", isOptimisticallyLive: false) }},
-            editeur: null,
-            init() {
-                this.editeur = new window.SrdTipTapEditor({
-                    monter: this.$refs.monter,
-                    barreOutils: this.$refs.barreOutils,
-                    contenuInitial: this.state || '',
-                    onChange: (html) => { this.state = html; },
-                    rubanTableau: this.$refs.rubanTableau,
-                    telechargerImage: (fichier) => new Promise((resolve, reject) => {
-                        this.$wire.upload(
-                            'componentFileAttachments.{{ $statePath }}',
-                            fichier,
-                            () => {
-                                this.$wire.getFormComponentFileAttachmentUrl('{{ $statePath }}')
-                                    .then((url) => resolve({ url }))
-                                    .catch(reject);
-                            },
-                            () => reject(new Error('Échec de l\'envoi au serveur')),
-                        );
-                    }),
-                    controles: {
-                        taillepolice: this.$refs.taillepolice,
-                        police: this.$refs.police,
-                        interligne: this.$refs.interligne,
-                        couleurTexte: this.$refs.couleurTexte,
-                        couleurSurlignage: this.$refs.couleurSurlignage,
-                        boutonSansSurlignage: this.$refs.boutonSansSurlignage,
-                        bordures: this.$refs.bordures,
-                        grilleTableau: { bouton: this.$refs.grilleBouton, popup: this.$refs.grillePopup },
-                    },
-                });
-            },
-            destroy() { if (this.editeur) this.editeur.detruire(); },
-        }"
+            statePath: @js($statePath),
+        })"
         wire:ignore
     >
         <div x-ref="barreOutils" class="srd-tiptap-barre">

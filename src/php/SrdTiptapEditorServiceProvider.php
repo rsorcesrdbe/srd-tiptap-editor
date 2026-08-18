@@ -14,7 +14,7 @@ class SrdTiptapEditorServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'srd-tiptap-editor');
 
         FilamentAsset::register([
-            AlpineComponentContenuVersionne::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.iife.js'),
+            AlpineComponentContenuVersionne::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.alpine.js'),
             CssContenuVersionne::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.css'),
         ], package: 'srd/tiptap-editor');
     }
