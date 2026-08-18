@@ -12,7 +12,6 @@
         x-data="{
             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')", isOptimisticallyLive: false) }},
             editeur: null,
-            ouvertPlus: false,
             init() {
                 this.editeur = new window.SrdTipTapEditor({
                     monter: this.$refs.monter,
@@ -82,34 +81,36 @@
                 <button type="button" data-commande="liste-puces">Liste à puces</button>
                 <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
                 <button type="button" data-commande="lien">Lien</button>
-                <button type="button" @click="ouvertPlus = !ouvertPlus" :aria-expanded="ouvertPlus" title="Plus d'options">…</button>
-            </div>
-            <div class="srd-tiptap-barre-ligne" x-show="ouvertPlus" x-cloak>
-                <select x-ref="interligne" title="Interligne">
-                    <option value="">Interligne…</option>
-                    @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
-                        <option value="{{ $valeur }}">{{ $etiquette }}</option>
-                    @endforeach
-                </select>
-                <button type="button" data-commande="reduire-retrait" title="Réduire le retrait (liste)">⇤</button>
-                <button type="button" data-commande="augmenter-retrait" title="Augmenter le retrait (liste)">⇥</button>
-                <div class="grille-tableau-conteneur">
-                    <button type="button" x-ref="grilleBouton">Bloc colonnes ▾</button>
-                    <div x-ref="grillePopup" class="grille-tableau-popup" hidden>
-                        <div class="grille-tableau-etiquette">Tableau</div>
-                        <div class="grille-tableau-cellules">
-                            @for ($ligne = 0; $ligne < 6; $ligne++)
-                                @for ($col = 0; $col < 8; $col++)
-                                    <span class="grille-tableau-cellule" data-ligne="{{ $ligne }}" data-col="{{ $col }}"></span>
-                                @endfor
-                            @endfor
+                <details class="srd-tiptap-plus">
+                    <summary title="Plus d'options">…</summary>
+                    <div class="srd-tiptap-barre-ligne srd-tiptap-plus-contenu">
+                        <select x-ref="interligne" title="Interligne">
+                            <option value="">Interligne…</option>
+                            @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
+                                <option value="{{ $valeur }}">{{ $etiquette }}</option>
+                            @endforeach
+                        </select>
+                        <button type="button" data-commande="reduire-retrait" title="Réduire le retrait (liste)">⇤</button>
+                        <button type="button" data-commande="augmenter-retrait" title="Augmenter le retrait (liste)">⇥</button>
+                        <div class="grille-tableau-conteneur">
+                            <button type="button" x-ref="grilleBouton">Bloc colonnes ▾</button>
+                            <div x-ref="grillePopup" class="grille-tableau-popup" hidden>
+                                <div class="grille-tableau-etiquette">Tableau</div>
+                                <div class="grille-tableau-cellules">
+                                    @for ($ligne = 0; $ligne < 6; $ligne++)
+                                        @for ($col = 0; $col < 8; $col++)
+                                            <span class="grille-tableau-cellule" data-ligne="{{ $ligne }}" data-col="{{ $col }}"></span>
+                                        @endfor
+                                    @endfor
+                                </div>
+                            </div>
                         </div>
+                        <button type="button" data-commande="tracer-ligne">Trait horizontal</button>
+                        @if ($avecImages)
+                            <button type="button" data-profil-image="standard">Image</button>
+                        @endif
                     </div>
-                </div>
-                <button type="button" data-commande="tracer-ligne">Trait horizontal</button>
-                @if ($avecImages)
-                    <button type="button" data-profil-image="standard">Image</button>
-                @endif
+                </details>
             </div>
         </div>
 

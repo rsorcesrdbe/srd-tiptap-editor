@@ -12,6 +12,14 @@
 .srd-tiptap-barre button { background: #5f6368; color: #fff; border: 0; border-radius: 4px; padding: 4px 10px; font-size: .8rem; cursor: pointer; }
 .srd-tiptap-barre button.actif { background: #1a73e8; }
 
+/* "..." : <details>/<summary> natif (pas de dependance JS/Alpine, pas de risque de timing avec
+   le chargement differe de l'editeur -- voir field.blade.php). */
+.srd-tiptap-plus { position: relative; }
+.srd-tiptap-plus summary { background: #5f6368; color: #fff; border-radius: 4px; padding: 4px 10px; font-size: .8rem; cursor: pointer; list-style: none; }
+.srd-tiptap-plus summary::-webkit-details-marker { display: none; }
+.srd-tiptap-plus[open] summary { background: #1a73e8; }
+.srd-tiptap-plus-contenu { position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; background: #3c4043; padding: .35rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; }
+
 .srd-tiptap-couleur-conteneur { display: inline-flex; align-items: center; gap: 2px; background: #5f6368; padding: 2px 6px; border-radius: 4px; }
 .srd-tiptap-couleur-etiquette { color: #fff; font-size: .8rem; font-weight: bold; }
 .srd-tiptap-couleur-conteneur input[type="color"] { width: 22px; height: 22px; padding: 0; border: none; background: none; cursor: pointer; }
