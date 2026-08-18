@@ -20,6 +20,11 @@ class TiptapEditor extends Field implements HasFileAttachmentsContract
 
     protected int $largeurImageParDefaut = 800;
 
+    // Actif par defaut (retro-compatible avec les usages existants, ex.
+    // entree_journals) : desactivable par field pour un contexte ou l'upload
+    // d'image n'a pas de sens (ex. une reponse courte de developpeur).
+    protected bool $avecImages = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,6 +45,18 @@ class TiptapEditor extends Field implements HasFileAttachmentsContract
     public function getLargeurImageParDefaut(): int
     {
         return $this->largeurImageParDefaut;
+    }
+
+    public function avecImages(bool $avecImages = true): static
+    {
+        $this->avecImages = $avecImages;
+
+        return $this;
+    }
+
+    public function getAvecImages(): bool
+    {
+        return $this->avecImages;
     }
 
     // GD (extension PHP standard, pas de dependance Composer supplementaire) : redimensionne a la

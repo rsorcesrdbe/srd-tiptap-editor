@@ -2,6 +2,7 @@
     use Filament\Support\Facades\FilamentAsset;
 
     $statePath = $getStatePath();
+    $avecImages = $getAvecImages();
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
@@ -11,6 +12,7 @@
         x-data="{
             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')", isOptimisticallyLive: false) }},
             editeur: null,
+            ouvertPlus: false,
             init() {
                 this.editeur = new window.SrdTipTapEditor({
                     monter: this.$refs.monter,
@@ -47,61 +49,68 @@
         wire:ignore
     >
         <div x-ref="barreOutils" class="srd-tiptap-barre">
-            <select x-ref="police" title="Police du texte sélectionné">
-                <option value="">Police…</option>
-                @foreach (['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'] as $police)
-                    <option value="{{ $police }}">{{ $police }}</option>
-                @endforeach
-            </select>
-            <select x-ref="taillepolice" title="Taille du texte sélectionné">
-                <option value="">Taille…</option>
-                @foreach ([8, 9, 10, 11, 12, 14, 16, 18, 20, 24] as $taille)
-                    <option value="{{ $taille }}" @selected($taille === 11)>{{ $taille }} pt</option>
-                @endforeach
-            </select>
-            <button type="button" data-commande="gras"><strong>G</strong></button>
-            <button type="button" data-commande="italique"><em>I</em></button>
-            <button type="button" data-commande="souligne"><u>S</u></button>
-            <button type="button" data-commande="barre" title="Barré"><s>S</s></button>
-            <span class="srd-tiptap-couleur-conteneur" title="Couleur du texte">
-                <span class="srd-tiptap-couleur-etiquette">A</span>
-                <input type="color" x-ref="couleurTexte" value="#000000">
-            </span>
-            <span class="srd-tiptap-couleur-conteneur" title="Couleur de surlignage">
-                <span class="srd-tiptap-couleur-etiquette">🖊</span>
-                <input type="color" x-ref="couleurSurlignage" value="#ffff00">
-            </span>
-            <button type="button" x-ref="boutonSansSurlignage" title="Retirer le surlignage">×surlign.</button>
-            <button type="button" data-commande="aligner-gauche" title="Aligner à gauche">⯇</button>
-            <button type="button" data-commande="aligner-centre" title="Centrer">☰</button>
-            <button type="button" data-commande="aligner-droite" title="Aligner à droite">⯈</button>
-            <button type="button" data-commande="aligner-justifie" title="Justifier">☰</button>
-            <select x-ref="interligne" title="Interligne">
-                <option value="">Interligne…</option>
-                @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
-                    <option value="{{ $valeur }}">{{ $etiquette }}</option>
-                @endforeach
-            </select>
-            <button type="button" data-commande="liste-puces">Liste à puces</button>
-            <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
-            <button type="button" data-commande="reduire-retrait" title="Réduire le retrait (liste)">⇤</button>
-            <button type="button" data-commande="augmenter-retrait" title="Augmenter le retrait (liste)">⇥</button>
-            <button type="button" data-commande="lien">Lien</button>
-            <div class="grille-tableau-conteneur">
-                <button type="button" x-ref="grilleBouton">Bloc colonnes ▾</button>
-                <div x-ref="grillePopup" class="grille-tableau-popup" hidden>
-                    <div class="grille-tableau-etiquette">Tableau</div>
-                    <div class="grille-tableau-cellules">
-                        @for ($ligne = 0; $ligne < 6; $ligne++)
-                            @for ($col = 0; $col < 8; $col++)
-                                <span class="grille-tableau-cellule" data-ligne="{{ $ligne }}" data-col="{{ $col }}"></span>
+            <div class="srd-tiptap-barre-ligne">
+                <button type="button" data-commande="gras"><strong>G</strong></button>
+                <button type="button" data-commande="italique"><em>I</em></button>
+                <button type="button" data-commande="souligne"><u>S</u></button>
+                <button type="button" data-commande="liste-puces">Liste à puces</button>
+                <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
+                <button type="button" data-commande="lien">Lien</button>
+                <button type="button" @click="ouvertPlus = !ouvertPlus" :aria-expanded="ouvertPlus" title="Plus d'options">…</button>
+            </div>
+            <div class="srd-tiptap-barre-ligne" x-show="ouvertPlus" x-cloak>
+                <select x-ref="police" title="Police du texte sélectionné">
+                    <option value="">Police…</option>
+                    @foreach (['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'] as $police)
+                        <option value="{{ $police }}">{{ $police }}</option>
+                    @endforeach
+                </select>
+                <select x-ref="taillepolice" title="Taille du texte sélectionné">
+                    <option value="">Taille…</option>
+                    @foreach ([8, 9, 10, 11, 12, 14, 16, 18, 20, 24] as $taille)
+                        <option value="{{ $taille }}" @selected($taille === 11)>{{ $taille }} pt</option>
+                    @endforeach
+                </select>
+                <button type="button" data-commande="barre" title="Barré"><s>S</s></button>
+                <span class="srd-tiptap-couleur-conteneur" title="Couleur du texte">
+                    <span class="srd-tiptap-couleur-etiquette">A</span>
+                    <input type="color" x-ref="couleurTexte" value="#000000">
+                </span>
+                <span class="srd-tiptap-couleur-conteneur" title="Couleur de surlignage">
+                    <span class="srd-tiptap-couleur-etiquette">🖊</span>
+                    <input type="color" x-ref="couleurSurlignage" value="#ffff00">
+                </span>
+                <button type="button" x-ref="boutonSansSurlignage" title="Retirer le surlignage">×surlign.</button>
+                <button type="button" data-commande="aligner-gauche" title="Aligner à gauche">⯇</button>
+                <button type="button" data-commande="aligner-centre" title="Centrer">☰</button>
+                <button type="button" data-commande="aligner-droite" title="Aligner à droite">⯈</button>
+                <button type="button" data-commande="aligner-justifie" title="Justifier">☰</button>
+                <select x-ref="interligne" title="Interligne">
+                    <option value="">Interligne…</option>
+                    @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
+                        <option value="{{ $valeur }}">{{ $etiquette }}</option>
+                    @endforeach
+                </select>
+                <button type="button" data-commande="reduire-retrait" title="Réduire le retrait (liste)">⇤</button>
+                <button type="button" data-commande="augmenter-retrait" title="Augmenter le retrait (liste)">⇥</button>
+                <div class="grille-tableau-conteneur">
+                    <button type="button" x-ref="grilleBouton">Bloc colonnes ▾</button>
+                    <div x-ref="grillePopup" class="grille-tableau-popup" hidden>
+                        <div class="grille-tableau-etiquette">Tableau</div>
+                        <div class="grille-tableau-cellules">
+                            @for ($ligne = 0; $ligne < 6; $ligne++)
+                                @for ($col = 0; $col < 8; $col++)
+                                    <span class="grille-tableau-cellule" data-ligne="{{ $ligne }}" data-col="{{ $col }}"></span>
+                                @endfor
                             @endfor
-                        @endfor
+                        </div>
                     </div>
                 </div>
+                <button type="button" data-commande="tracer-ligne">Trait horizontal</button>
+                @if ($avecImages)
+                    <button type="button" data-profil-image="standard">Image</button>
+                @endif
             </div>
-            <button type="button" data-commande="tracer-ligne">Trait horizontal</button>
-            <button type="button" data-profil-image="standard">Image</button>
         </div>
 
         <div class="srd-tiptap-zone-page">

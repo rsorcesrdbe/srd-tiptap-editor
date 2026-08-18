@@ -7,7 +7,8 @@
    .grille-tableau-*          -> picker de taille de tableau (voir toolbar/grille-tableau.js) */
 
 /* Barre d'outils : boutons construits a la main (TipTap est "headless", aucun ruban fourni). */
-.srd-tiptap-barre { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.srd-tiptap-barre { display: flex; flex-direction: column; gap: .35rem; margin-bottom: .5rem; }
+.srd-tiptap-barre-ligne { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
 .srd-tiptap-barre button { background: #5f6368; color: #fff; border: 0; border-radius: 4px; padding: 4px 10px; font-size: .8rem; cursor: pointer; }
 .srd-tiptap-barre button.actif { background: #1a73e8; }
 
