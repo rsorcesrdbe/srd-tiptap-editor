@@ -46,8 +46,8 @@
                 <button type="button" data-commande="aligner-centre" title="Centrer">☰</button>
                 <button type="button" data-commande="aligner-droite" title="Aligner à droite">⯈</button>
                 <button type="button" data-commande="aligner-justifie" title="Justifier">☰</button>
-                <button type="button" data-commande="liste-puces">Liste à puces</button>
-                <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
+                <button type="button" data-commande="liste-puces" title="Liste à puces">•≡</button>
+                <button type="button" data-commande="liste-numerotee" title="Liste numérotée">1≡</button>
                 <button type="button" data-commande="lien">Lien</button>
                 <details class="srd-tiptap-plus">
                     <summary title="Plus d'options">…</summary>
