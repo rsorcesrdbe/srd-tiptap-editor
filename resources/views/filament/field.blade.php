@@ -50,15 +50,6 @@
     >
         <div x-ref="barreOutils" class="srd-tiptap-barre">
             <div class="srd-tiptap-barre-ligne">
-                <button type="button" data-commande="gras"><strong>G</strong></button>
-                <button type="button" data-commande="italique"><em>I</em></button>
-                <button type="button" data-commande="souligne"><u>S</u></button>
-                <button type="button" data-commande="liste-puces">Liste à puces</button>
-                <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
-                <button type="button" data-commande="lien">Lien</button>
-                <button type="button" @click="ouvertPlus = !ouvertPlus" :aria-expanded="ouvertPlus" title="Plus d'options">…</button>
-            </div>
-            <div class="srd-tiptap-barre-ligne" x-show="ouvertPlus" x-cloak>
                 <select x-ref="police" title="Police du texte sélectionné">
                     <option value="">Police…</option>
                     @foreach (['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'] as $police)
@@ -71,6 +62,9 @@
                         <option value="{{ $taille }}" @selected($taille === 11)>{{ $taille }} pt</option>
                     @endforeach
                 </select>
+                <button type="button" data-commande="gras"><strong>G</strong></button>
+                <button type="button" data-commande="italique"><em>I</em></button>
+                <button type="button" data-commande="souligne"><u>S</u></button>
                 <button type="button" data-commande="barre" title="Barré"><s>S</s></button>
                 <span class="srd-tiptap-couleur-conteneur" title="Couleur du texte">
                     <span class="srd-tiptap-couleur-etiquette">A</span>
@@ -85,6 +79,12 @@
                 <button type="button" data-commande="aligner-centre" title="Centrer">☰</button>
                 <button type="button" data-commande="aligner-droite" title="Aligner à droite">⯈</button>
                 <button type="button" data-commande="aligner-justifie" title="Justifier">☰</button>
+                <button type="button" data-commande="liste-puces">Liste à puces</button>
+                <button type="button" data-commande="liste-numerotee">Liste numérotée</button>
+                <button type="button" data-commande="lien">Lien</button>
+                <button type="button" @click="ouvertPlus = !ouvertPlus" :aria-expanded="ouvertPlus" title="Plus d'options">…</button>
+            </div>
+            <div class="srd-tiptap-barre-ligne" x-show="ouvertPlus" x-cloak>
                 <select x-ref="interligne" title="Interligne">
                     <option value="">Interligne…</option>
                     @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
