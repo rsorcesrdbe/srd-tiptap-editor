@@ -28,7 +28,7 @@
                                     .then((url) => resolve({ url }))
                                     .catch(reject);
                             },
-                            () => reject(new Error("Échec de l'envoi au serveur")),
+                            () => reject(new Error('Échec de l\'envoi au serveur')),
                         );
                     }),
                     controles: {
