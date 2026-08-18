@@ -2,10 +2,10 @@
 
 namespace Srd\TiptapEditor;
 
-use Filament\Support\Assets\AlpineComponent;
-use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
+use Srd\TiptapEditor\Filament\AlpineComponentContenuVersionne;
+use Srd\TiptapEditor\Filament\CssContenuVersionne;
 
 class SrdTiptapEditorServiceProvider extends ServiceProvider
 {
@@ -14,8 +14,8 @@ class SrdTiptapEditorServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'srd-tiptap-editor');
 
         FilamentAsset::register([
-            AlpineComponent::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.iife.js'),
-            Css::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.css'),
+            AlpineComponentContenuVersionne::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.iife.js'),
+            CssContenuVersionne::make('srd-tiptap-editor', __DIR__.'/../../dist/editeur.css'),
         ], package: 'srd/tiptap-editor');
     }
 }
