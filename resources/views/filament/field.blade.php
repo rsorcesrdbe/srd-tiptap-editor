@@ -41,17 +41,17 @@
                     <span class="srd-tiptap-couleur-etiquette">🖊</span>
                     <input type="color" x-ref="couleurSurlignage" value="#ffff00">
                 </span>
-                <button type="button" x-ref="boutonSansSurlignage" title="Retirer le surlignage">×surlign.</button>
                 <button type="button" data-commande="aligner-gauche" title="Aligner à gauche">⯇</button>
                 <button type="button" data-commande="aligner-centre" title="Centrer">☰</button>
                 <button type="button" data-commande="aligner-droite" title="Aligner à droite">⯈</button>
                 <button type="button" data-commande="aligner-justifie" title="Justifier">☰</button>
                 <button type="button" data-commande="liste-puces" title="Liste à puces">•≡</button>
                 <button type="button" data-commande="liste-numerotee" title="Liste numérotée">1≡</button>
-                <button type="button" data-commande="lien">Lien</button>
                 <details class="srd-tiptap-plus">
                     <summary title="Plus d'options">…</summary>
                     <div class="srd-tiptap-barre-ligne srd-tiptap-plus-contenu">
+                        <button type="button" x-ref="boutonSansSurlignage" title="Retirer le surlignage">×surlign.</button>
+                        <button type="button" data-commande="lien">Lien</button>
                         <select x-ref="interligne" title="Interligne">
                             <option value="">Interligne…</option>
                             @foreach (['1' => '1', '1.15' => '1,15', '1.5' => '1,5', '2' => '2'] as $valeur => $etiquette)
