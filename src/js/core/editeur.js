@@ -64,7 +64,37 @@ export class SrdTipTapEditor {
             onUpdate: ({ editor }) => onChange(editor.getHTML()),
             onSelectionUpdate: ({ editor }) => this._surTransaction(editor),
             onTransaction: ({ editor }) => this._surTransaction(editor),
+            editorProps: {
+                // Colle une image directement depuis le presse-papier (capture d'ecran, copie
+                // depuis une autre appli) sans passer par le bouton "Image" -- meme circuit
+                // d'upload (telechargerImage), juste declenche autrement. Demande utilisateur
+                // (2026-08-20) : "coller des schemas".
+                handlePaste: (view, event) => this._gererCollageImage(event),
+            },
         });
+    }
+
+    _gererCollageImage(event) {
+        const { telechargerImage } = this.config;
+        if (!telechargerImage || !event.clipboardData) return false;
+
+        const item = Array.from(event.clipboardData.items)
+            .find((it) => it.kind === 'file' && it.type.startsWith('image/'));
+        const fichier = item?.getAsFile();
+        if (!fichier) return false;
+
+        // handlePaste doit repondre de façon synchrone (ProseMirror) ; l'upload lui reste
+        // asynchrone, lance ici sans attendre, l'insertion arrive quand il aboutit.
+        event.preventDefault();
+        telechargerImage(fichier, 'standard')
+            .then(({ url, largeurAffichage }) => {
+                this.editor.chain().focus().setImage({ src: url, width: largeurAffichage }).run();
+            })
+            .catch((erreur) => {
+                window.alert("Échec de l'envoi de l'image : " + erreur.message);
+            });
+
+        return true;
     }
 
     _surTransaction(editor) {
