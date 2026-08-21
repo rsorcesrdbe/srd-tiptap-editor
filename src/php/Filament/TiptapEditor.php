@@ -61,13 +61,17 @@ class TiptapEditor extends Field implements HasFileAttachmentsContract
 
     // GD (extension PHP standard, pas de dependance Composer supplementaire) : redimensionne a la
     // largeur configuree si l'image est plus large, reencode en JPEG. Si le fichier n'est pas une
-    // image que GD sait decoder, on retombe sur le stockage brut plutot que d'echouer l'upload.
-    protected function redimensionnerEtStocker(TemporaryUploadedFile $file): string
+    // image que GD sait decoder, retombe sur les octets bruts du fichier envoye plutot que
+    // d'echouer l'upload. Publique et separee du stockage (ci-dessous) : une appli consommatrice
+    // dont le disque n'est pas persistant (ex. Laravel Cloud, disque efface a chaque deploiement)
+    // a besoin des octets pour les stocker elle-meme (ex. bytea Postgres) sans jamais toucher un
+    // disque fichier — voir saveUploadedFileAttachmentsUsing() cote application.
+    public function redimensionnerImage(TemporaryUploadedFile $file): string
     {
         $source = @imagecreatefromstring(file_get_contents($file->getRealPath()));
 
         if ($source === false) {
-            return $this->handleFileAttachmentUpload($file);
+            return file_get_contents($file->getRealPath());
         }
 
         $largeurOrigine = imagesx($source);
@@ -89,6 +93,17 @@ class TiptapEditor extends Field implements HasFileAttachmentsContract
         imagejpeg($source, quality: 82);
         $contenu = ob_get_clean();
         imagedestroy($source);
+
+        return $contenu;
+    }
+
+    // Stockage par defaut (disque Filament standard) : conserve pour une appli consommatrice dont
+    // le disque est reellement persistant. Sur un disque ephemere, l'application doit remplacer ce
+    // comportement via ->saveUploadedFileAttachmentsUsing()/->getUploadedAttachmentUrlUsing() en
+    // s'appuyant sur redimensionnerImage() ci-dessus (voir SRDPROJETS, StockageBinaire + bytea).
+    protected function redimensionnerEtStocker(TemporaryUploadedFile $file): string
+    {
+        $contenu = $this->redimensionnerImage($file);
 
         $chemin = trim($this->getFileAttachmentsDirectory().'/'.Str::uuid().'.jpg', '/');
         $this->getFileAttachmentsDisk()->put($chemin, $contenu, $this->getFileAttachmentsVisibility());
