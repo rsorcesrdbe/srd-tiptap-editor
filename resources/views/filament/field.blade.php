@@ -12,6 +12,7 @@
         x-data="srdTiptapEditor({
             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')", isOptimisticallyLive: false) }},
             statePath: @js($statePath),
+            avecImages: @js($avecImages),
         })"
         wire:ignore
     >

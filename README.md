@@ -10,7 +10,6 @@ Moteur d'édition TipTap partagé entre les applications SRD (SRDPROJETS, RAPSRD
 
 ## Ce qui n'est PAS encore fait
 
-- **Upload d'image non câblé côté Filament** : le cœur JS le supporte (callback `telechargerImage` injectable), mais le brancher sur l'upload de fichiers Livewire est un chantier à part. Le bouton d'image n'apparaît pas dans la barre d'outils Filament fournie ici.
 - **Migration de RAPSRD vers ce package** : pas faite ici, pilotée séparément (RAPSRD garde son implémentation locale `param-zone-txtrich.js` pour l'instant).
 - **Aucun registre npm/Composer privé** : consommation en dépendance locale par chemin relatif (`"repositories": [{"type": "path", "url": "../srd-tiptap-editor"}]`), pas de publication.
 
@@ -45,8 +44,11 @@ new SrdTipTapEditor({
   },
 
   telechargerImage: async (fichier, profil) => ({ url, largeurAffichage }),
+  avecImages: true,                     // defaut true -- coller/deposer une image desactive avec
 
   largeurPageInitiale: { largeurPx, fraction },
   facteurZoomConfort: 1.5,
 })
 ```
+
+**Images** : bouton dans la barre d'outils (repli `[data-profil-image]`, cache dans le menu "..." si la barre est etroite), plus coller (Ctrl+V) ou glisser-deposer une image directement dans le texte (2026-09-27) — meme callback `telechargerImage` dans les deux cas. `avecImages: false` desactive les trois a la fois (bouton absent, collage et depot ignores).

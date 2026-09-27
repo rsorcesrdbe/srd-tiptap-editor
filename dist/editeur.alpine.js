@@ -28923,6 +28923,7 @@ function normaliserConfig(config) {
     zonePage: config.zonePage || config.monter.parentElement,
     controles: config.controles || {},
     telechargerImage: config.telechargerImage || null,
+    avecImages: config.avecImages ?? true,
     largeurPageInitiale: config.largeurPageInitiale || null,
     facteurZoomConfort: config.facteurZoomConfort ?? 1.5
   };
@@ -28969,8 +28970,27 @@ var SrdTipTapEditor = class {
       content: contenuInitial,
       onUpdate: ({ editor }) => onChange(editor.getHTML()),
       onSelectionUpdate: ({ editor }) => this._surTransaction(editor),
-      onTransaction: ({ editor }) => this._surTransaction(editor)
+      onTransaction: ({ editor }) => this._surTransaction(editor),
+      editorProps: {
+        handlePaste: (vue, evenement) => this._surImageDeposee(evenement.clipboardData?.files),
+        handleDrop: (vue, evenement) => this._surImageDeposee(evenement.dataTransfer?.files)
+      }
     });
+  }
+  // Colle/depose une capture directement dans le texte (demande utilisateur 2026-09-27),
+  // meme mecanisme que le bouton Image (_cablerUpload) : un seul fichier image a la fois,
+  // le reste (texte colle, fichiers non-image deposes) suit le comportement natif de
+  // TipTap. Desactive avec le bouton Image (avecImages) -- meme intention, pas seulement
+  // le meme rendu de barre d'outils.
+  _surImageDeposee(fichiers) {
+    const { avecImages, telechargerImage } = this.config;
+    if (!avecImages || !telechargerImage || !fichiers || !fichiers.length) return false;
+    const fichier = fichiers[0];
+    if (!fichier.type?.startsWith("image/")) return false;
+    telechargerImage(fichier, "standard").then(({ url, largeurAffichage }) => {
+      this.editor.chain().focus().setImage({ src: url, width: largeurAffichage }).run();
+    }).catch((erreur) => window.alert("\xC9chec de l'envoi de l'image : " + erreur.message));
+    return true;
   }
   _surTransaction(editor) {
     this._synchroniserControles(editor);
@@ -29089,7 +29109,7 @@ var SrdTipTapEditor = class {
 };
 
 // src/js/index.alpine.js
-function index_alpine_default({ state, statePath }) {
+function index_alpine_default({ state, statePath, avecImages }) {
   return {
     state,
     editeur: null,
@@ -29102,6 +29122,7 @@ function index_alpine_default({ state, statePath }) {
           this.state = html;
         },
         rubanTableau: this.$refs.rubanTableau,
+        avecImages,
         telechargerImage: (fichier) => new Promise((resolve, reject) => {
           this.$wire.upload(
             `componentFileAttachments.${statePath}`,

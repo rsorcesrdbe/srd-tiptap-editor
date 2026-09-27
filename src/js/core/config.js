@@ -18,6 +18,7 @@ export function normaliserConfig(config) {
         zonePage: config.zonePage || config.monter.parentElement,
         controles: config.controles || {},
         telechargerImage: config.telechargerImage || null,
+        avecImages: config.avecImages ?? true,
         largeurPageInitiale: config.largeurPageInitiale || null,
         facteurZoomConfort: config.facteurZoomConfort ?? 1.5,
     };

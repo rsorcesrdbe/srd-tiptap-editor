@@ -14,7 +14,7 @@ import { SrdTipTapEditor } from './core/editeur.js';
 // Filament (voir rich-editor.blade.php : x-data="richEditorFormComponent({...})").
 // field.blade.php doit donc ecrire x-data="srdTiptapEditor({...})" et cette fonction
 // EST cet export par defaut : une factory qui retourne l'objet Alpine, pas la classe brute.
-export default function ({ state, statePath }) {
+export default function ({ state, statePath, avecImages }) {
     return {
         state,
         editeur: null,
@@ -25,6 +25,7 @@ export default function ({ state, statePath }) {
                 contenuInitial: this.state || '',
                 onChange: (html) => { this.state = html; },
                 rubanTableau: this.$refs.rubanTableau,
+                avecImages,
                 telechargerImage: (fichier) => new Promise((resolve, reject) => {
                     this.$wire.upload(
                         `componentFileAttachments.${statePath}`,

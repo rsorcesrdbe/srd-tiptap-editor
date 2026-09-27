@@ -64,7 +64,32 @@ export class SrdTipTapEditor {
             onUpdate: ({ editor }) => onChange(editor.getHTML()),
             onSelectionUpdate: ({ editor }) => this._surTransaction(editor),
             onTransaction: ({ editor }) => this._surTransaction(editor),
+            editorProps: {
+                handlePaste: (vue, evenement) => this._surImageDeposee(evenement.clipboardData?.files),
+                handleDrop: (vue, evenement) => this._surImageDeposee(evenement.dataTransfer?.files),
+            },
         });
+    }
+
+    // Colle/depose une capture directement dans le texte (demande utilisateur 2026-09-27),
+    // meme mecanisme que le bouton Image (_cablerUpload) : un seul fichier image a la fois,
+    // le reste (texte colle, fichiers non-image deposes) suit le comportement natif de
+    // TipTap. Desactive avec le bouton Image (avecImages) -- meme intention, pas seulement
+    // le meme rendu de barre d'outils.
+    _surImageDeposee(fichiers) {
+        const { avecImages, telechargerImage } = this.config;
+        if (!avecImages || !telechargerImage || !fichiers || !fichiers.length) return false;
+
+        const fichier = fichiers[0];
+        if (!fichier.type?.startsWith('image/')) return false;
+
+        telechargerImage(fichier, 'standard')
+            .then(({ url, largeurAffichage }) => {
+                this.editor.chain().focus().setImage({ src: url, width: largeurAffichage }).run();
+            })
+            .catch((erreur) => window.alert("Échec de l'envoi de l'image : " + erreur.message));
+
+        return true;
     }
 
     _surTransaction(editor) {
